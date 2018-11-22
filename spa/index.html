@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<a href="/home">首页</a>
+<a href="/share">分享</a>
+<a href="/trash">回收站</a>
+<h1></h1>
+<script src="jquery.min.js"></script>
+<script>
+    var fileName = 'home';//数据文件的名称
+    $.ajax({
+        type: 'get',
+        url: fileName + '.json',
+        data: '',
+        dataType:'json',
+        success:function (data) {
+            $('h1').html(data.content);
+        }
+    });
+
+    $('a').on('click',function (e) {
+        e.preventDefault();
+        var fileName = $(this).attr('href').replace('/','');
+        $.ajax({
+            type: 'get',
+            url: fileName + '.json',
+            data: '',
+            dataType:'json',
+            success:function (data) {
+                $('h1').html(data.content);
+                //追加当前内容对应的历史
+                history.pushState(null,null,fileName);
+            }
+        });
+    });
+
+    //切换历史记录事件
+    window.onpopstate = function () {
+        console.log(location.href);
+        /*判断需要加载什么数据*/
+        var href = location.href;
+        var fileName = 'home';
+        //看看地址栏是否存在share字符串
+        if(href.indexOf('share') !== -1){
+            fileName = 'share';
+        }else if(href.indexOf('trash') !== -1){
+            fileName = 'trash';
+        }
+        $.ajax({
+            type: 'get',
+            url: fileName + '.json',
+            data: '',
+            dataType:'json',
+            success:function (data) {
+                $('h1').html(data.content);
+            }
+        });
+    }
+
+</script>
+</body>
+</html>

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        .target {
+            width: 400px;
+            height: 400px;
+            border:2px dashed;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="target"></div>
+    <script>
+        var target = document.querySelector('.target');
+        // e.preventDefault();  
+        target.addEventListener('dragenter',function (e) {
+            e.preventDefault();
+        });
+        target.addEventListener('dragover',function (e) {
+            e.preventDefault();
+        })
+        target.addEventListener('drop',function (e) {
+            e.preventDefault();
+            // 触发此事件时,获取文件信息发送ajax请求上传至服务器。
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST','./pic.php');
+            xhr.setRequestHeader('Content-tytpe','application/x-www-form-urlencoded');
+            var fd = new FormData();
+            var data = e.dataTransfer.files[0];
+            fd.append('pic',data);
+            xhr.send(fd);
+            xhr.onreadystatechange = function () {
+                if(this.status === 200) {
+                    var img = document.createELement('img');
+                    img.src = this.responseText;
+                    document.querySelector('body').appendChild(img);
+                }
+            }
+        })
+    </script>
+</body>
+</html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">;
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="jquery.min.js"></script>
+</head>
+<body>
+    <a href="/home">首页</a>
+    <a href="/share">分享页</a>
+    <a href="/trash">回收站</a>
+    <h1></h1>
+    <script>
+        // 1.
+        var filename = 'home';
+        $.ajax({
+            type : 'GET',
+            url : filename + '.json',
+            dataType : 'json',
+            success : function (datas) {
+                $('h1').html(datas.content);
+            }
+        })
+        $('a').on('click',function (e) {
+            var filename = $(this).attr('href').replace('','')
+            e.preventDefault();
+            $.ajax({
+                type : 'GET',
+                url : filename + '.json',
+                dataType : 'json',
+                success : function () {
+                    $('h1').html(data.content);
+                    history.pushState(null,null,filename);
+                }
+            })
+        });
+
+        window.onpopstate = function () {
+            var href = location.href;
+            var filename = 'home';
+            if(href.indexOf('share') !== -1) {
+                filename = 'share'
+            } else if(href.indexOf('trash')!==-1) {
+                filename = 'trash';
+            }
+            $.ajax({
+                type : 'GET',
+                dataType :'json',
+                url : filename + '.json',
+                success : function (datas) {
+                    $('h1').html(datas.content)
+                }
+            })
+        };
+    </script>
+</body>
+</html>
